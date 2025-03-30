@@ -1,0 +1,46 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2020",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "node_modules/*"
+            ],
+            "@controllers/*": [
+                "src/controllers/*"
+            ],
+            "@models/*": [
+                "src/models/*"
+            ],
+            "@routes/*": [
+                "src/routes/*"
+            ],
+            "@middleware/*": [
+                "src/middleware/*"
+            ],
+            "@utils/*": [
+                "src/utils/*"
+            ],
+            "@config/*": [
+                "src/config/*"
+            ],
+            "@services/*": [
+                "src/services/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*",
+        "*.js"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "build"
+    ]
+}
