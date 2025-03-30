@@ -2,8 +2,8 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import connectToDatabase from './config/database.js'
-import healthRoutes from './routes/health.js'
 import auth from './routes/auth.js'
+import healthRouter from '@routes/health.js'
 
 dotenv.config()
 const app = express()
@@ -21,7 +21,7 @@ app.use(cors({
 app.get('/', (req, res) => {
     res.status(200).json({ message: 'API is running successfully 🚀' })
 })
-app.use('/ammar', healthRoutes)
+app.use('/api', healthRouter)
 app.use('/auth', auth)
 
 // Global Error Handler
