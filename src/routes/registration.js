@@ -1,21 +1,21 @@
+import { Router } from 'express'
 import { userValidationSchema } from '../validation/userValidation.js'
 import User from '../models/User.js'
 
-// Example route handler
-router.post('/register', async (req, res) => {
+const router = Router()
+
+// 📝 Register Route
+router.post('/', async (req, res) => {
   try {
-    // ✅ Validate input using Yup
     await userValidationSchema.validate(req.body, { abortEarly: false })
 
     const { username, email, password } = req.body
 
-    // ❌ Check if user already exists
     const existingUser = await User.findOne({ email })
     if (existingUser) {
       return res.status(400).json({ message: 'Email is already in use' })
     }
 
-    // ✅ Create new user (password gets hashed automatically)
     const newUser = new User({ username, email, password })
     await newUser.save()
 
@@ -28,3 +28,5 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Something went wrong' })
   }
 })
+
+export default router
