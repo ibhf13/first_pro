@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { userValidationSchema } from '../validation/userValidation.js'
 import User from '../models/User.js'
+import { isPasswordStrong, hashPassword } from '../utils/passwordUtils.js'
 
 const router = Router()
 
@@ -11,12 +12,19 @@ router.post('/', async (req, res) => {
 
     const { username, email, password } = req.body
 
+    // 👇 Muss innerhalb der Route-Funktion stehen!
+    if (!isPasswordStrong(password)) {
+      return res.status(400).json({ message: 'Password is not strong enough' })
+    }
+
     const existingUser = await User.findOne({ email })
     if (existingUser) {
       return res.status(400).json({ message: 'Email is already in use' })
     }
 
-    const newUser = new User({ username, email, password })
+    const hashedPassword = await hashPassword(password)
+
+    const newUser = new User({ username, email, password: hashedPassword })
     await newUser.save()
 
     res.status(201).json({ message: 'User registered successfully' })
