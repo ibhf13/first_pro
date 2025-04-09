@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import connectToDatabase from './config/database.js'
 import auth from './routes/auth.js'
-import healthRouter from '@routes/health.js'
+import healthRouter from './routes/health.js'
 
 dotenv.config()
 const app = express()
