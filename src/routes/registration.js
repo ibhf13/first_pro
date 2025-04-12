@@ -1,40 +1,33 @@
+// src/routes/registration.js
 import { Router } from 'express'
-import { userValidationSchema } from '../validation/userValidation.js'
-import User from '../models/User.js'
-import { isPasswordStrong, hashPassword } from '../utils/passwordUtils.js'
+import { registerUser } from '../controllers/authController.js'
+import { loginUser } from '../controllers/loginController.js'
+import { comparePassword, hashPassword, isPasswordStrong } from '../utils/passwordUtils.js'
 
 const router = Router()
 
-// 📝 Register Route
-router.post('/', async (req, res) => {
-  try {
-    await userValidationSchema.validate(req.body, { abortEarly: false })
+// ✅ Use controller for register
+router.post('/', registerUser)
+router.post('/login', loginUser)
 
-    const { username, email, password } = req.body
+router.get('/test', async (req, res) => {
+  const testPassword = 'StrongPass123!'
+  const isStrong = isPasswordStrong(testPassword)
+  const hashed = await hashPassword(testPassword)
+  const isMatch = await comparePassword(testPassword, hashed)
 
-    // 👇 Muss innerhalb der Route-Funktion stehen!
-    if (!isPasswordStrong(password)) {
-      return res.status(400).json({ message: 'Password is not strong enough' })
-    }
+  res.json({ password: testPassword, isStrong, hashed, isMatch })
+})
 
-    const existingUser = await User.findOne({ email })
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email is already in use' })
-    }
 
-    const hashedPassword = await hashPassword(password)
+// 🔍 Optional: test route for password functions
+router.get('/test', async (req, res) => {
+  const testPassword = 'StrongPass123!'
+  const isStrong = isPasswordStrong(testPassword)
+  const hashed = await hashPassword(testPassword)
+  const isMatch = await comparePassword(testPassword, hashed)
 
-    const newUser = new User({ username, email, password: hashedPassword })
-    await newUser.save()
-
-    res.status(201).json({ message: 'User registered successfully' })
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({ errors: error.errors })
-    }
-    console.error(error)
-    res.status(500).json({ message: 'Something went wrong' })
-  }
+  res.json({ password: testPassword, isStrong, hashed, isMatch })
 })
 
 export default router
