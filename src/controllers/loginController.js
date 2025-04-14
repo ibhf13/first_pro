@@ -2,6 +2,7 @@
 import jwt from 'jsonwebtoken'
 import User from '../models/User.js'
 import { comparePassword } from '../utils/passwordUtils.js'
+import { generateToken } from '../utils/jwtUtils.js'
 
 export const loginUser = async (req, res) => {
   try {
@@ -22,11 +23,8 @@ export const loginUser = async (req, res) => {
     }
 
     // ✅ Generate JWT token
-    const token = jwt.sign(
-      { id: user._id, email: user.email, username: user.username },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    )
+   
+    const token = generateToken({ id: user._id, email: user.email })
 
     // 🧼 Remove password before sending response
     const { password: _, ...userData } = user.toObject()
